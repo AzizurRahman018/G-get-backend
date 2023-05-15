@@ -18,7 +18,15 @@ export class ProductService {
       where: id,
     });
   }
+  // flashsale product
 
+  async flashSale(): Promise<Products[]> {
+    return this.prisma.products.findMany({
+      where: {
+        flashSale: true,
+      },
+    });
+  }
   // products by category
   async productByCategory(
     category: Prisma.ProductsWhereInput,

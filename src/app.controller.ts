@@ -12,7 +12,10 @@ export class AppController {
   async getProducts(): Promise<productModel[]> {
     return this.productsService.products();
   }
-
+  @Get('products/flashsale')
+  async getFlashSale(): Promise<productModel[]> {
+    return this.productsService.flashSale();
+  }
   // get single product by id
   @Get('products/:id')
   async getProductById(@Param('id') id: number): Promise<productModel> {
