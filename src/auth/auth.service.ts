@@ -29,7 +29,7 @@ export class AuthService {
     const result = await this.prismaService.users.create({
       data: {
         email: user.email,
-        name: user.email,
+        name: user.name,
         password: hashPassword,
         refresh_token: refReshToken,
       },
@@ -89,23 +89,33 @@ export class AuthService {
   }
 
   // get accessToken by refreshToken
-  async refresh(data: any) {
-    const isExists = await this.isExists(data.email);
-    if (isExists.refresh_token == null) {
-      throw new ForbiddenException(' Please Login again.');
+  async refresh(token: any) {
+    const data = this.jwtService.decode(token);
+    if (typeof data === 'object') {
+      // Access the 'email' property
+      const email = data.email;
+      const isExists = await this.isExists(email);
+      if (isExists.refresh_token == null) {
+        throw new ForbiddenException(' Please Login again.');
+      }
+      const accessToken = await this.getAccessToken({
+        email: isExists.email,
+        id: isExists.id,
+      });
+      const refreshToken = await this.getRefreshTok(isExists.email);
+      await this.prismaService.users.update({
+        where: { email: email },
+        data: {
+          refresh_token: refreshToken,
+        },
+      });
+      return {
+        accessToken: accessToken,
+        email: isExists.email,
+        name: isExists.name,
+        user_id: isExists.id,
+      };
     }
-    const accessToken = await this.getAccessToken({
-      email: isExists.email,
-      id: isExists.id,
-    });
-    const refreshToken = await this.getRefreshTok(isExists.email);
-    await this.prismaService.users.update({
-      where: { email: data.email },
-      data: {
-        refresh_token: refreshToken,
-      },
-    });
-    return { accessToken: accessToken };
   }
 
   // Utils...................................

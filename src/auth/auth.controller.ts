@@ -21,8 +21,12 @@ export class AuthController {
   async logOut(@Req() req: any) {
     await this.authService.logOut(req.user);
   }
+  @Public()
   @Get('/refresh')
   async refresh(@Req() req: any) {
-    return await this.authService.refresh(req.user);
+    console.log();
+    const index = req.rawHeaders.indexOf('Authorization');
+    const token = req.rawHeaders[index + 1].replace('Bearer ', '');
+    return await this.authService.refresh(token);
   }
 }

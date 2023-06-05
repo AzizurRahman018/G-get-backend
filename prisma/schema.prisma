@@ -51,3 +51,15 @@ model Orders{
  total Int
  count Int
 }
+
+model Cart{
+id Int @default(autoincrement()) @id @unique
+ user_id Int
+ product_id Int
+}
+
+model WishList{
+  id Int @default(autoincrement()) @id @unique
+ user_id Int
+ product_id Int
+}
