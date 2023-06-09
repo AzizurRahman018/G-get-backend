@@ -6,60 +6,67 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-
 model Products {
- id Int @default(autoincrement()) @id @unique
-  name String
-  price Int
-  rating Float
-  des String
-  brand String
-  image String[]
-  discount Int?
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  price     Int
+  rating    Float
+  des       String
+  brand     String
+  image     String[]
+  discount  Int?
   flashSale Boolean
-  date String
-  color String[] @default([])
-  category String[]
+  date      String
+  color     String[] @default([])
+  category  String[]
 }
 
-
-model Banner{
-  id Int @default(autoincrement()) @id @unique
+model Banner {
+  id     String      @id @default(auto()) @map("_id") @db.ObjectId
   title String
   image String
   brand String
   price Int
 }
 
-model Users{
-  id Int @default(autoincrement()) @id @unique
-  name String
-  email String @unique
+model Users {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String   @unique
   refresh_token String?
+  created_at    DateTime @default(now())
+  password      String
+}
+
+model Orders {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  user_id    Int
+  product_id Int
+  total      Int
+  count      Int
+}
+
+model Cart {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  user_id    Int
+  product_id Int      @unique
   created_at DateTime @default(now())
-  password String
 }
 
-model Orders{
- id Int @default(autoincrement()) @id @unique
- user_id Int
- product_id Int
- total Int
- count Int
+model WishListPId {
+  product_id  String   @id @default(auto()) @map("_id") @db.ObjectId
+  wishList    WishList? @relation(fields: [wishListId], references: [id])
+  wishListId  String @db.ObjectId
 }
 
-model Cart{
-id Int @default(autoincrement()) @id @unique
- user_id Int
- product_id Int
+model WishList {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  user_id     Int          @unique
+  products    WishListPId[]
+  created_at  DateTime     @default(now())
 }
 
-model WishList{
-  id Int @default(autoincrement()) @id @unique
- user_id Int
- product_id Int
-}
