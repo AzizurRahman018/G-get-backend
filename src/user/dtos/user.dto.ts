@@ -1,4 +1,4 @@
 export class wishList {
-  productId: number;
-  userId: number;
+  productId: string;
+  userId: string;
 }

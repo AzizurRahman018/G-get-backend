@@ -21,8 +21,8 @@ export class ProductsController {
   // get single product by id
   @Public()
   @Get(':id')
-  async getProductById(@Param('id') id: number): Promise<productModel> {
-    return this.productsService.product({ id: Number(id) });
+  async getProductById(@Param('id') id: string): Promise<productModel> {
+    return this.productsService.product({ id: id });
   }
 
   // get Product by category
